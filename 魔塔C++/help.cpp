@@ -1,43 +1,45 @@
 #include<graphics.h>
 //#include"allinclude.h"
 
-// 载入PNG图并去透明部分
-void putimagePNG(int  picture_x, int picture_y, IMAGE* picture) //x为载入图片的X坐标，y为Y坐标
+// Render PNG image with alpha transparency blending
+// Uses the formula: Cp = ap*FP + (1-ap)*BP (Porter-Duff over operator)
+void putimagePNG(int  picture_x, int picture_y, IMAGE* picture)
 {
-    DWORD* dst = GetImageBuffer();    // GetImageBuffer()函数，用于获取绘图设备的显存指针，EASYX自带
+    DWORD* dst = GetImageBuffer();
     DWORD* draw = GetImageBuffer();
-    DWORD* src = GetImageBuffer(picture); //获取picture的显存指针
-    int picture_width = picture->getwidth(); //获取picture的宽度，EASYX自带
-    int picture_height = picture->getheight(); //获取picture的高度，EASYX自带
-    int graphWidth = getwidth();       //获取绘图区的宽度，EASYX自带
-    int graphHeight = getheight();     //获取绘图区的高度，EASYX自带
-    int dstX = 0;    //在显存里像素的角标
+    DWORD* src = GetImageBuffer(picture);
+    int picture_width = picture->getwidth();
+    int picture_height = picture->getheight();
+    int graphWidth = getwidth();
+    int graphHeight = getheight();
+    int dstX = 0;
 
-    // 实现透明贴图 公式： Cp=αp*FP+(1-αp)*BP ， 贝叶斯定理来进行点颜色的概率计算
+    // Per-pixel alpha blending
     for (int iy = 0; iy < picture_height; iy++)
     {
         for (int ix = 0; ix < picture_width; ix++)
         {
-            int srcX = ix + iy * picture_width; //在显存里像素的角标
-            int sa = ((src[srcX] & 0xff000000) >> 24); //0xAArrggbb;AA是透明度
-            int sr = ((src[srcX] & 0xff0000) >> 16); //获取RGB里的R
-            int sg = ((src[srcX] & 0xff00) >> 8);   //G
-            int sb = src[srcX] & 0xff;              //B
+            int srcX = ix + iy * picture_width;
+            int sa = ((src[srcX] & 0xff000000) >> 24); // Alpha channel
+            int sr = ((src[srcX] & 0xff0000) >> 16);   // Red
+            int sg = ((src[srcX] & 0xff00) >> 8);       // Green
+            int sb = src[srcX] & 0xff;                  // Blue
             if (ix >= 0 && ix <= graphWidth && iy >= 0 && iy <= graphHeight && dstX <= graphWidth * graphHeight)
             {
-                dstX = (ix + picture_x) + (iy + picture_y) * graphWidth; //在显存里像素的角标
+                dstX = (ix + picture_x) + (iy + picture_y) * graphWidth;
                 int dr = ((dst[dstX] & 0xff0000) >> 16);
                 int dg = ((dst[dstX] & 0xff00) >> 8);
                 int db = dst[dstX] & 0xff;
-                draw[dstX] = ((sr * sa / 255 + dr * (255 - sa) / 255) << 16)  //公式： Cp=αp*FP+(1-αp)*BP  ； αp=sa/255 , FP=sr , BP=dr
-                    | ((sg * sa / 255 + dg * (255 - sa) / 255) << 8)         //αp=sa/255 , FP=sg , BP=dg
-                    | (sb * sa / 255 + db * (255 - sa) / 255);              //αp=sa/255 , FP=sb , BP=db
+                // Blend: result = src * alpha + dst * (1 - alpha)
+                draw[dstX] = ((sr * sa / 255 + dr * (255 - sa) / 255) << 16)
+                    | ((sg * sa / 255 + dg * (255 - sa) / 255) << 8)
+                    | (sb * sa / 255 + db * (255 - sa) / 255);
             }
         }
     }
 }
 
-// 适用于 y <0 以及x<0的任何情况
+// putimagePNG2 with y<0 clipping support
 void putimagePNG2(int x, int y, IMAGE* picture) {
     IMAGE imgTmp;
     if (y < 0) {
@@ -60,7 +62,7 @@ void putimagePNG2(int x, int y, IMAGE* picture) {
     putimagePNG(x, y, picture);
 }
 
-// 适用于 y <0 以及y>0的任何情况
+// putimagePNG2 with window width clipping
 void putimagePNG2(int x, int y, int winWidth, IMAGE* picture) {
     IMAGE imgTmp;
     if (y < 0) {
@@ -90,4 +92,21 @@ void putimagePNG2(int x, int y, int winWidth, IMAGE* picture) {
     }
 
     putimagePNG(x, y, picture);
+}
+
+// Scale image to new size (nearest-neighbor)
+void scaleImage(IMAGE* dst, IMAGE* src, int newW, int newH) {
+    int oldW = src->getwidth();
+    int oldH = src->getheight();
+    if (oldW <= 0 || oldH <= 0) return;
+    Resize(dst, newW, newH);
+    DWORD* srcBuf = GetImageBuffer(src);
+    DWORD* dstBuf = GetImageBuffer(dst);
+    for (int y = 0; y < newH; y++) {
+        int srcY = y * oldH / newH;
+        for (int x = 0; x < newW; x++) {
+            int srcX = x * oldW / newW;
+            dstBuf[y * newW + x] = srcBuf[srcY * oldW + srcX];
+        }
+    }
 }

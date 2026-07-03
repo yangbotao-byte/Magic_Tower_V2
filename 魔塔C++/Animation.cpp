@@ -1,6 +1,6 @@
 #include"allinclude.h"
 
-// 更新动画函数
+// Update animation frame based on elapsed time
 void UpdateAnimation(Animation& anim, float deltaTime) {
     anim.elapsedTime += deltaTime;
     if (anim.elapsedTime >= anim.frameTime) {
@@ -11,4 +11,3 @@ void UpdateAnimation(Animation& anim, float deltaTime) {
         }
     }
 }
-

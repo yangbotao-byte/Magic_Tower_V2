@@ -15,25 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="菜单.cpp">
+    <ClCompile Include="Menu.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="加载.cpp">
+    <ClCompile Include="LoadingScreen.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="hero.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="HeroSelect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="help.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="垃圾代码.cpp">
+    <ClCompile Include="GameOverScreen.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="主世界.cpp">
+    <ClCompile Include="MainWorld.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="updatehero.cpp">
@@ -42,30 +45,30 @@
     <ClCompile Include="updateUI.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="游戏地图.cpp">
+    <ClCompile Include="GameMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="开门.cpp">
+    <ClCompile Include="DoorAnim.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="关卡1.cpp">
+    <ClCompile Include="Level1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="attack矩阵.cpp">
+    <ClCompile Include="attackBox.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.h">
-      <Filter>头文件</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="particle.h">
+    <ClInclude Include="Enemy.h">
       <Filter>头文件</Filter>
-    </ClCompile>
+    </ClInclude>
+    <ClInclude Include="particle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClCompile Include="particle.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
